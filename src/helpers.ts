@@ -47,5 +47,7 @@ export const getClicksPerHalfSecond = (
     clickMap[0.5] += 1;
   }
 
-  return clickMap;
+  return Object.values(clickMap);
 };
+
+export const noLineDataArray = Array(CHART_TIME_VALUES.length).fill(0);

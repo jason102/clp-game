@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Chart from './Chart';
 import {
   Container,
@@ -7,9 +7,15 @@ import {
   ButtonCountContainer,
 } from './Dashboard.styles';
 import useInitDashboard from './useInitDashboard';
-import { getClicksPerHalfSecond } from 'helpers';
+import { getClicksPerHalfSecond, noLineDataArray } from 'helpers';
 
 const Dashboard: React.FC = () => {
+  const [blackLineValues, setBlackLineValues] =
+    useState<number[]>(noLineDataArray);
+  const [orangeLineValues, setOrangeLineValues] =
+    useState<number[]>(noLineDataArray);
+  const [blueLineValues, setBlueLineValues] =
+    useState<number[]>(noLineDataArray);
   const {
     isLoading,
     loadingError,
@@ -37,7 +43,9 @@ const Dashboard: React.FC = () => {
         blueClickTimestamps
       );
 
-      console.log({ orangeLineValues, blueLineValues, blackLineValues });
+      setBlackLineValues(blackLineValues);
+      setOrangeLineValues(orangeLineValues);
+      setBlueLineValues(blueLineValues);
     }
   }, [
     blueClickTimestamps,
@@ -56,7 +64,11 @@ const Dashboard: React.FC = () => {
 
   return (
     <Container>
-      <Chart />
+      <Chart
+        blackLineValues={blackLineValues}
+        orangeLineValues={orangeLineValues}
+        blueLineValues={blueLineValues}
+      />
       <ButtonCountContainer>
         <OrangeButtonCount>{orangeClickTimestamps.length}</OrangeButtonCount>
         <BlueButtonCount>{blueClickTimestamps.length}</BlueButtonCount>

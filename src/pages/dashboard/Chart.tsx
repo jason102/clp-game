@@ -7,10 +7,13 @@ import {
   DatasetComponent,
   TooltipComponent,
   LegendComponent,
+  ToolboxComponent,
 } from 'echarts/components';
+import { LabelLayout } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import { ChartContainer } from './Dashboard.styles';
 import { CHART_TIME_VALUES } from 'helpers';
+import { BLUE, ORANGE } from 'Colors';
 
 echarts.use([
   TitleComponent,
@@ -20,9 +23,21 @@ echarts.use([
   TooltipComponent,
   LineChart,
   LegendComponent,
+  LabelLayout,
+  ToolboxComponent,
 ]);
 
-const Chart: React.FC = () => {
+interface Props {
+  blackLineValues: number[];
+  orangeLineValues: number[];
+  blueLineValues: number[];
+}
+
+const Chart: React.FC<Props> = ({
+  blackLineValues,
+  orangeLineValues,
+  blueLineValues,
+}) => {
   const chartRef = useRef<any>(null);
 
   useEffect(() => {
@@ -30,20 +45,44 @@ const Chart: React.FC = () => {
       const lineChart = echarts.init(chartRef.current);
 
       lineChart.setOption({
-        grid: { top: 8, right: 8, bottom: 24, left: 36 },
+        grid: {
+          left: '3%',
+          right: '13%',
+          containLabel: true,
+        },
         xAxis: {
           type: 'category',
           data: CHART_TIME_VALUES,
+          name: 'Seconds',
+          boundaryGap: true,
+          axisLabel: { showMinLabel: true, showMaxLabel: true },
         },
-        legend: { data: ['black', 'orange', 'blue'] },
+        legend: {},
         yAxis: {
+          name: 'Clicks',
           type: 'value',
         },
         series: [
           {
-            data: [820, 932, 901, 934, 1290, 1330, 1320, 1000, 1000, 1000],
+            name: 'Total Clicks',
+            data: blackLineValues,
             type: 'line',
             smooth: true,
+            color: 'black',
+          },
+          {
+            name: 'Orange',
+            data: orangeLineValues,
+            type: 'line',
+            smooth: true,
+            color: ORANGE,
+          },
+          {
+            name: 'Blue',
+            data: blueLineValues,
+            type: 'line',
+            smooth: true,
+            color: BLUE,
           },
         ],
         tooltip: {
@@ -51,7 +90,7 @@ const Chart: React.FC = () => {
         },
       });
     }
-  }, []);
+  }, [blackLineValues, blueLineValues, orangeLineValues]);
 
   return <ChartContainer ref={chartRef} />;
 };
