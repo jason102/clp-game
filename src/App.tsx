@@ -9,6 +9,7 @@ const App: React.FC = () => {
     <AppContainer>
       <BrowserRouter>
         <Routes>
+          <Route path='/' element={<Dashboard />} />
           <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/client' element={<Client />} />
         </Routes>
