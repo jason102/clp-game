@@ -8,7 +8,7 @@ import {
   TooltipComponent,
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
-import { Container } from './Dashboard.styles';
+import { ChartContainer } from './Dashboard.styles';
 
 echarts.use([
   TitleComponent,
@@ -19,12 +19,12 @@ echarts.use([
   LineChart,
 ]);
 
-const Dashboard: React.FC = () => {
-  const lineChartRef = useRef<any>(null);
+const Chart: React.FC = () => {
+  const chartRef = useRef<any>(null);
 
   useEffect(() => {
-    if (lineChartRef.current) {
-      const lineChart = echarts.init(lineChartRef.current);
+    if (chartRef.current) {
+      const lineChart = echarts.init(chartRef.current);
 
       lineChart.setOption({
         grid: { top: 8, right: 8, bottom: 24, left: 36 },
@@ -49,11 +49,7 @@ const Dashboard: React.FC = () => {
     }
   }, []);
 
-  return (
-    <Container>
-      <div style={{ width: '60vw', height: '400px' }} ref={lineChartRef} />
-    </Container>
-  );
+  return <ChartContainer ref={chartRef} />;
 };
 
-export default Dashboard;
+export default Chart;
