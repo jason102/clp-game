@@ -1,18 +1,39 @@
 import { useEffect, useState } from 'react';
 import { firestoreDB } from 'firebaseConfig';
-import { addDoc, collection, Timestamp } from 'firebase/firestore';
+import { addDoc, collection, onSnapshot, Timestamp } from 'firebase/firestore';
+
+interface GameDoc {
+  orangeClicks: Timestamp[];
+  blueClicks: Timestamp[];
+  startTime: Timestamp;
+}
 
 const useInitGame = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingError, setLoadingError] = useState('');
+  const [orangeClickTimestamps, setOrangeClickTimestamps] = useState<number[]>(
+    []
+  );
+  const [blueClickTimestamps, setBlueClickTimestamps] = useState<number[]>([]);
 
   useEffect(() => {
     const setupDatabase = async () => {
       try {
-        await addDoc(collection(firestoreDB, 'games'), {
+        const gameDocRef = await addDoc(collection(firestoreDB, 'games'), {
           orangeClicks: [],
           blueClicks: [],
           startTime: Timestamp.fromDate(new Date()),
+        });
+
+        onSnapshot(gameDocRef, (snapshot) => {
+          const data = snapshot.data() as GameDoc;
+
+          setBlueClickTimestamps(
+            data.blueClicks.map((dbTimestamp) => dbTimestamp.toMillis())
+          );
+          setOrangeClickTimestamps(
+            data.orangeClicks.map((dbTimestamp) => dbTimestamp.toMillis())
+          );
         });
       } catch (e: any) {
         setLoadingError(e);
@@ -24,7 +45,12 @@ const useInitGame = () => {
     setupDatabase();
   }, []);
 
-  return { isLoading, loadingError };
+  return {
+    isLoading,
+    loadingError,
+    orangeClickTimestamps,
+    blueClickTimestamps,
+  };
 };
 
 export default useInitGame;

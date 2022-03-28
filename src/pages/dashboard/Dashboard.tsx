@@ -1,10 +1,20 @@
 import React from 'react';
 import Chart from './Chart';
-import { Container } from './Dashboard.styles';
+import {
+  Container,
+  OrangeButtonCount,
+  BlueButtonCount,
+  ButtonCountContainer,
+} from './Dashboard.styles';
 import useInitGame from './useInitGame';
 
 const Dashboard: React.FC = () => {
-  const { isLoading, loadingError } = useInitGame();
+  const {
+    isLoading,
+    loadingError,
+    orangeClickTimestamps,
+    blueClickTimestamps,
+  } = useInitGame();
 
   if (isLoading) {
     return <Container>Loading Dashboard</Container>;
@@ -17,6 +27,10 @@ const Dashboard: React.FC = () => {
   return (
     <Container>
       <Chart />
+      <ButtonCountContainer>
+        <OrangeButtonCount>{orangeClickTimestamps.length}</OrangeButtonCount>
+        <BlueButtonCount>{blueClickTimestamps.length}</BlueButtonCount>
+      </ButtonCountContainer>
     </Container>
   );
 };
