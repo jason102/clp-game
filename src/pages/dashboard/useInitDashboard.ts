@@ -14,7 +14,7 @@ interface GameDoc {
   startTime: Timestamp;
 }
 
-const useInitGame = () => {
+const useInitDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingError, setLoadingError] = useState('');
   const [orangeClickTimestamps, setOrangeClickTimestamps] = useState<number[]>(
@@ -44,9 +44,9 @@ const useInitGame = () => {
         });
       } catch (e: any) {
         setLoadingError(e);
-      } finally {
-        setIsLoading(false);
       }
+
+      setIsLoading(false);
     };
 
     setupDatabase();
@@ -66,4 +66,4 @@ const useInitGame = () => {
   };
 };
 
-export default useInitGame;
+export default useInitDashboard;

@@ -6,7 +6,7 @@ import {
   BlueButtonCount,
   ButtonCountContainer,
 } from './Dashboard.styles';
-import useInitGame from './useInitGame';
+import useInitDashboard from './useInitDashboard';
 
 const Dashboard: React.FC = () => {
   const {
@@ -14,7 +14,7 @@ const Dashboard: React.FC = () => {
     loadingError,
     orangeClickTimestamps,
     blueClickTimestamps,
-  } = useInitGame();
+  } = useInitDashboard();
 
   if (isLoading) {
     return <Container>Loading Dashboard</Container>;
