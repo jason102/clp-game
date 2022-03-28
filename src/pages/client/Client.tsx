@@ -22,7 +22,7 @@ const Client: React.FC = () => {
   };
 
   if (isLoading) {
-    return <Container>Loading Dashboard</Container>;
+    return <Container>Loading Client</Container>;
   }
 
   if (loadingError) {

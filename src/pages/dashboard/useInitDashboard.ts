@@ -8,6 +8,8 @@ import {
   Unsubscribe,
 } from 'firebase/firestore';
 
+const GAME_TIME = 5000; // 5 seconds
+
 interface GameDoc {
   orangeClicks: Timestamp[];
   blueClicks: Timestamp[];
@@ -21,26 +23,49 @@ const useInitDashboard = () => {
     []
   );
   const [blueClickTimestamps, setBlueClickTimestamps] = useState<number[]>([]);
-  const unsubscribeSnapshot = useRef<Unsubscribe | null>(null);
+  const [isGameFinished, setIsGameFinished] = useState(false);
+  const unsubscribeRef = useRef<Unsubscribe | null>(null);
+
+  const unsubscribeFromDatabaseUpdates = () => {
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current();
+    }
+  };
 
   useEffect(() => {
     const setupDatabase = async () => {
       try {
+        // First set up the new game
         const gameDocRef = await addDoc(collection(firestoreDB, 'games'), {
           orangeClicks: [],
           blueClicks: [],
           startTime: Timestamp.fromDate(new Date()),
         });
 
-        unsubscribeSnapshot.current = onSnapshot(gameDocRef, (snapshot) => {
+        // Then listen to game updates from the client
+        unsubscribeRef.current = onSnapshot(gameDocRef, (snapshot) => {
           const data = snapshot.data() as GameDoc;
 
-          setBlueClickTimestamps(
-            data.blueClicks.map((dbTimestamp) => dbTimestamp.toMillis())
+          const blueClicks = data.blueClicks.map((dbTimestamp) =>
+            dbTimestamp.toMillis()
           );
+          const orangeClicks = data.orangeClicks.map((dbTimestamp) =>
+            dbTimestamp.toMillis()
+          );
+
+          setBlueClickTimestamps(blueClicks);
           setOrangeClickTimestamps(
             data.orangeClicks.map((dbTimestamp) => dbTimestamp.toMillis())
           );
+
+          if (orangeClicks.length + blueClicks.length === 1) {
+            // Means it's the first click coming in, so start the timer in the component
+            setTimeout(() => {
+              setIsGameFinished(true);
+
+              unsubscribeFromDatabaseUpdates();
+            }, GAME_TIME);
+          }
         });
       } catch (e: any) {
         setLoadingError(e);
@@ -51,11 +76,7 @@ const useInitDashboard = () => {
 
     setupDatabase();
 
-    return () => {
-      if (unsubscribeSnapshot.current) {
-        unsubscribeSnapshot.current();
-      }
-    };
+    return () => unsubscribeFromDatabaseUpdates();
   }, []);
 
   return {
@@ -63,6 +84,7 @@ const useInitDashboard = () => {
     loadingError,
     orangeClickTimestamps,
     blueClickTimestamps,
+    isGameFinished,
   };
 };
 

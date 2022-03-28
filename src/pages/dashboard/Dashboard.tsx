@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Chart from './Chart';
 import {
   Container,
@@ -14,7 +14,14 @@ const Dashboard: React.FC = () => {
     loadingError,
     orangeClickTimestamps,
     blueClickTimestamps,
+    isGameFinished,
   } = useInitDashboard();
+
+  useEffect(() => {
+    if (isGameFinished) {
+      // set the chart values
+    }
+  }, [isGameFinished]);
 
   if (isLoading) {
     return <Container>Loading Dashboard</Container>;
