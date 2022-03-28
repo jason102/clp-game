@@ -1,34 +1,29 @@
 import { updateDoc, arrayUnion, Timestamp } from 'firebase/firestore';
-import { gameDocRef } from 'firebaseConfig';
+import { blueClicksDocRef, orangeClicksDocRef } from 'firebaseConfig';
 import React from 'react';
 import { BlueButton, Container, OrangeButton } from './Client.styles';
 
 const Client: React.FC = () => {
-  const onButtonClick = (buttonColor: string) => {
+  const onBlueButtonClicked = () => {
     const updatedTimestampArray = arrayUnion(Timestamp.fromDate(new Date()));
 
-    updateDoc(
-      gameDocRef,
-      buttonColor === 'orange'
-        ? {
-            orangeClicks: updatedTimestampArray,
-          }
-        : { blueClicks: updatedTimestampArray }
-    );
+    updateDoc(blueClicksDocRef, {
+      clicks: updatedTimestampArray,
+    });
+  };
+
+  const onOrangeButtonClicked = () => {
+    const updatedTimestampArray = arrayUnion(Timestamp.fromDate(new Date()));
+
+    updateDoc(orangeClicksDocRef, {
+      clicks: updatedTimestampArray,
+    });
   };
 
   return (
     <Container>
-      <OrangeButton
-        type='button'
-        value='-'
-        onClick={() => onButtonClick('orange')}
-      />
-      <BlueButton
-        type='button'
-        value='+'
-        onClick={() => onButtonClick('blue')}
-      />
+      <OrangeButton type='button' value='-' onClick={onOrangeButtonClicked} />
+      <BlueButton type='button' value='+' onClick={onBlueButtonClicked} />
     </Container>
   );
 };

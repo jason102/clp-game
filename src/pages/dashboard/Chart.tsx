@@ -6,9 +6,11 @@ import {
   GridComponent,
   DatasetComponent,
   TooltipComponent,
+  LegendComponent,
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import { ChartContainer } from './Dashboard.styles';
+import { CHART_TIME_VALUES } from 'helpers';
 
 echarts.use([
   TitleComponent,
@@ -17,6 +19,7 @@ echarts.use([
   CanvasRenderer,
   TooltipComponent,
   LineChart,
+  LegendComponent,
 ]);
 
 const Chart: React.FC = () => {
@@ -30,14 +33,15 @@ const Chart: React.FC = () => {
         grid: { top: 8, right: 8, bottom: 24, left: 36 },
         xAxis: {
           type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: CHART_TIME_VALUES,
         },
+        legend: { data: ['black', 'orange', 'blue'] },
         yAxis: {
           type: 'value',
         },
         series: [
           {
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
+            data: [820, 932, 901, 934, 1290, 1330, 1320, 1000, 1000, 1000],
             type: 'line',
             smooth: true,
           },

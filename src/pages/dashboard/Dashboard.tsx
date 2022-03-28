@@ -7,6 +7,7 @@ import {
   ButtonCountContainer,
 } from './Dashboard.styles';
 import useInitDashboard from './useInitDashboard';
+import { getClicksPerHalfSecond } from 'helpers';
 
 const Dashboard: React.FC = () => {
   const {
@@ -15,13 +16,35 @@ const Dashboard: React.FC = () => {
     orangeClickTimestamps,
     blueClickTimestamps,
     isGameFinished,
+    startingTime,
   } = useInitDashboard();
 
   useEffect(() => {
     if (isGameFinished) {
-      // set the chart values
+      // Loop through all clicks and see how many were clicked per half second
+      const blackLineValues = getClicksPerHalfSecond(startingTime.current, [
+        ...orangeClickTimestamps,
+        ...blueClickTimestamps,
+      ]);
+
+      const orangeLineValues = getClicksPerHalfSecond(
+        startingTime.current,
+        orangeClickTimestamps
+      );
+
+      const blueLineValues = getClicksPerHalfSecond(
+        startingTime.current,
+        blueClickTimestamps
+      );
+
+      console.log({ orangeLineValues, blueLineValues, blackLineValues });
     }
-  }, [isGameFinished]);
+  }, [
+    blueClickTimestamps,
+    isGameFinished,
+    orangeClickTimestamps,
+    startingTime,
+  ]);
 
   if (isLoading) {
     return <Container>Loading Dashboard</Container>;

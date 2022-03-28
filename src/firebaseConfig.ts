@@ -14,6 +14,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const firestoreDB = getFirestore(app);
 
-const gameDocRef = doc(collection(firestoreDB, 'games'), 'game');
+const gameCollection = collection(firestoreDB, 'game');
+const orangeClicksDocRef = doc(gameCollection, 'orangeClicks');
+const blueClicksDocRef = doc(gameCollection, 'blueClicks');
 
-export { firestoreDB, gameDocRef };
+export { firestoreDB, orangeClicksDocRef, blueClicksDocRef };
