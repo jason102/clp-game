@@ -1,12 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { firestoreDB } from 'firebaseConfig';
-import {
-  addDoc,
-  collection,
-  onSnapshot,
-  Timestamp,
-  Unsubscribe,
-} from 'firebase/firestore';
+import { gameDocRef } from 'firebaseConfig';
+import { setDoc, onSnapshot, Timestamp, Unsubscribe } from 'firebase/firestore';
 
 const GAME_TIME = 5000; // 5 seconds
 
@@ -36,7 +30,7 @@ const useInitDashboard = () => {
     const setupDatabase = async () => {
       try {
         // First set up the new game
-        const gameDocRef = await addDoc(collection(firestoreDB, 'games'), {
+        await setDoc(gameDocRef, {
           orangeClicks: [],
           blueClicks: [],
           startTime: Timestamp.fromDate(new Date()),
