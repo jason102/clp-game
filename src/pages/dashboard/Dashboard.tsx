@@ -8,8 +8,11 @@ import {
 } from './Dashboard.styles';
 import useInitDashboard from './useInitDashboard';
 import { getClicksPerHalfSecond, noLineDataArray } from 'helpers';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+
   const [graphData, setGraphData] = useState<GraphData>({
     blackLineValues: noLineDataArray,
     orangeLineValues: noLineDataArray,
@@ -56,6 +59,10 @@ const Dashboard: React.FC = () => {
     startingTime,
   ]);
 
+  const onOpenClientPage = () => {
+    navigate('/client');
+  };
+
   if (isLoading) {
     return <Container>Loading Dashboard</Container>;
   }
@@ -71,6 +78,14 @@ const Dashboard: React.FC = () => {
         <OrangeButtonCount>{orangeClickTimestamps.length}</OrangeButtonCount>
         <BlueButtonCount>{blueClickTimestamps.length}</BlueButtonCount>
       </ButtonCountContainer>
+      <p>
+        {`To play the game, you must `}
+        <input
+          type='button'
+          value='open this page'
+          onClick={onOpenClientPage}
+        />
+      </p>
     </Container>
   );
 };
