@@ -27,17 +27,17 @@ echarts.use([
   ToolboxComponent,
 ]);
 
-interface Props {
+export interface GraphData {
   blackLineValues: number[];
-  orangeLineValues: number[];
   blueLineValues: number[];
+  orangeLineValues: number[];
 }
 
-const Chart: React.FC<Props> = ({
-  blackLineValues,
-  orangeLineValues,
-  blueLineValues,
-}) => {
+interface Props {
+  graphData: GraphData;
+}
+
+const Chart: React.FC<Props> = ({ graphData }) => {
   const chartRef = useRef<any>(null);
 
   useEffect(() => {
@@ -65,21 +65,21 @@ const Chart: React.FC<Props> = ({
         series: [
           {
             name: 'Total Clicks',
-            data: blackLineValues,
+            data: graphData.blackLineValues,
             type: 'line',
             smooth: true,
             color: 'black',
           },
           {
             name: 'Orange',
-            data: orangeLineValues,
+            data: graphData.orangeLineValues,
             type: 'line',
             smooth: true,
             color: ORANGE,
           },
           {
             name: 'Blue',
-            data: blueLineValues,
+            data: graphData.blueLineValues,
             type: 'line',
             smooth: true,
             color: BLUE,
@@ -90,7 +90,7 @@ const Chart: React.FC<Props> = ({
         },
       });
     }
-  }, [blackLineValues, blueLineValues, orangeLineValues]);
+  }, [graphData]);
 
   return <ChartContainer ref={chartRef} />;
 };
