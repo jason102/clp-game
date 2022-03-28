@@ -1,7 +1,13 @@
 import React from 'react';
+import { BlueButton, Container, OrangeButton } from './Client.styles';
 
 const Client: React.FC = () => {
-  return <div>Client</div>;
+  return (
+    <Container>
+      <OrangeButton type='button' value='-' />
+      <BlueButton type='button' value='+' />
+    </Container>
+  );
 };
 
 export default Client;
