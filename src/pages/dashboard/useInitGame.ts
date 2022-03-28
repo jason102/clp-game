@@ -1,6 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { firestoreDB } from 'firebaseConfig';
-import { addDoc, collection, onSnapshot, Timestamp } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  onSnapshot,
+  Timestamp,
+  Unsubscribe,
+} from 'firebase/firestore';
 
 interface GameDoc {
   orangeClicks: Timestamp[];
@@ -15,6 +21,7 @@ const useInitGame = () => {
     []
   );
   const [blueClickTimestamps, setBlueClickTimestamps] = useState<number[]>([]);
+  const unsubscribeSnapshot = useRef<Unsubscribe | null>(null);
 
   useEffect(() => {
     const setupDatabase = async () => {
@@ -25,7 +32,7 @@ const useInitGame = () => {
           startTime: Timestamp.fromDate(new Date()),
         });
 
-        onSnapshot(gameDocRef, (snapshot) => {
+        unsubscribeSnapshot.current = onSnapshot(gameDocRef, (snapshot) => {
           const data = snapshot.data() as GameDoc;
 
           setBlueClickTimestamps(
@@ -43,6 +50,12 @@ const useInitGame = () => {
     };
 
     setupDatabase();
+
+    return () => {
+      if (unsubscribeSnapshot.current) {
+        unsubscribeSnapshot.current();
+      }
+    };
   }, []);
 
   return {
