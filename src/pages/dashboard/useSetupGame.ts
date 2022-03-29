@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { blueClicksDocRef, orangeClicksDocRef } from 'firebaseConfig';
 import { setDoc, onSnapshot, Unsubscribe } from 'firebase/firestore';
-import { GAME_TIME } from 'helpers';
+import { GAME_TIME, getClicksPerHalfSecond, noLineDataArray } from 'helpers';
+import { GraphData } from './Chart';
 
-const useInitDashboard = () => {
+const useSetupGame = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingError, setLoadingError] = useState('');
   const [orangeClickDBCount, setOrangeClickDBCount] = useState(0);
@@ -13,6 +14,12 @@ const useInitDashboard = () => {
   );
   const [blueClickTimestamps, setBlueClickTimestamps] = useState<number[]>([]);
   const [isGameFinished, setIsGameFinished] = useState(false);
+  const [graphData, setGraphData] = useState<GraphData>({
+    blackLineValues: noLineDataArray,
+    orangeLineValues: noLineDataArray,
+    blueLineValues: noLineDataArray,
+  });
+
   const orangeButtonUnsubscribeRef = useRef<Unsubscribe | null>(null);
   const blueButtonUnsubscribeRef = useRef<Unsubscribe | null>(null);
   const startingTime = useRef(0);
@@ -128,14 +135,45 @@ const useInitDashboard = () => {
     setupTimer,
   ]);
 
+  // When the timer times out, loop through all clicks and see how many were clicked per half second
+  // Then take this data in an array format suitable for the chart and update the chart with it
+  useEffect(() => {
+    if (isGameFinished) {
+      const blackLineValues = getClicksPerHalfSecond(startingTime.current, [
+        ...orangeClickTimestamps,
+        ...blueClickTimestamps,
+      ]);
+
+      const orangeLineValues = getClicksPerHalfSecond(
+        startingTime.current,
+        orangeClickTimestamps
+      );
+
+      const blueLineValues = getClicksPerHalfSecond(
+        startingTime.current,
+        blueClickTimestamps
+      );
+
+      setGraphData({
+        blackLineValues,
+        orangeLineValues,
+        blueLineValues,
+      });
+    }
+  }, [
+    blueClickTimestamps,
+    isGameFinished,
+    orangeClickTimestamps,
+    startingTime,
+  ]);
+
   return {
     isLoading,
     loadingError,
     orangeClickTimestamps,
     blueClickTimestamps,
-    isGameFinished,
-    startingTime,
+    graphData,
   };
 };
 
-export default useInitDashboard;
+export default useSetupGame;
