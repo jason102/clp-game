@@ -3,7 +3,10 @@ import userEvent from '@testing-library/user-event';
 import Client from './Client';
 import * as firebase from 'firebase/firestore';
 
-jest.mock('firebase/firestore');
+jest.mock('firebase/firestore', () => ({
+  increment: () => 'incrementValue',
+  updateDoc: jest.fn(),
+}));
 jest.mock('firebaseConfig', () => ({
   blueClicksDocRef: 'blueClicksDocRef',
   orangeClicksDocRef: 'orangeClicksDocRef',
@@ -48,7 +51,7 @@ describe('Client page', () => {
     userEvent.click(orangeButton);
 
     expect(spy).toHaveBeenCalledWith('orangeClicksDocRef', {
-      clicks: undefined,
+      clicks: 'incrementValue',
     });
     expect(spy).toHaveBeenCalledTimes(1);
   });
@@ -62,7 +65,7 @@ describe('Client page', () => {
     userEvent.click(orangeButton);
 
     expect(spy).toHaveBeenCalledWith('blueClicksDocRef', {
-      clicks: undefined,
+      clicks: 'incrementValue',
     });
     expect(spy).toHaveBeenCalledTimes(1);
   });

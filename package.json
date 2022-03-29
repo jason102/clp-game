@@ -63,7 +63,7 @@
       "^.+\\.(j|t)sx?$": "ts-jest"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!variables/.*)"
+      "<rootDir>/node_modules/(?!echarts|variables)"
     ],
     "moduleDirectories": [
       "node_modules",

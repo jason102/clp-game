@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dashboard page renders the loading state and dashboard when loading is successful 2`] = `
+<DocumentFragment>
+  <div
+    class="sc-bczRLJ fptUTC"
+  >
+    <div
+      class="sc-gsnTZi iTsiio"
+    />
+    <div
+      class="sc-dkzDqf kpvutt"
+    >
+      <div
+        class="sc-hKMtZM sc-eCYdqJ dLVDKf ebCuMD"
+      >
+        0
+      </div>
+      <div
+        class="sc-hKMtZM sc-jSMfEi dLVDKf hbJYNr"
+      >
+        0
+      </div>
+    </div>
+    <p>
+      To play the game, you must 
+      <a
+        href="/client"
+        target="_blank"
+      >
+        open this page
+      </a>
+    </p>
+  </div>
+</DocumentFragment>
+`;
