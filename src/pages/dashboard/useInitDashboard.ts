@@ -1,17 +1,13 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { blueClicksDocRef, orangeClicksDocRef } from 'firebaseConfig';
-import { setDoc, onSnapshot, Timestamp, Unsubscribe } from 'firebase/firestore';
+import { setDoc, onSnapshot, Unsubscribe } from 'firebase/firestore';
 import { GAME_TIME } from 'helpers';
 
 const useInitDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingError, setLoadingError] = useState('');
-  const [orangeClickTimestampData, setOrangeClickTimestampData] = useState<
-    Timestamp[]
-  >([]);
-  const [blueClickTimestampData, setBlueClickTimestampData] = useState<
-    Timestamp[]
-  >([]);
+  const [orangeClickDBCount, setOrangeClickDBCount] = useState(0);
+  const [blueClickDBCount, setBlueClickDBCount] = useState(0);
   const [orangeClickTimestamps, setOrangeClickTimestamps] = useState<number[]>(
     []
   );
@@ -42,16 +38,17 @@ const useInitDashboard = () => {
     }, GAME_TIME);
   }, []);
 
+  // Set up a new game
   useEffect(() => {
     const setupDatabase = async () => {
       try {
-        // First set up the new game
+        // Clear the clicks of the previous game
         await Promise.all([
           setDoc(orangeClicksDocRef, {
-            clicks: [],
+            clicks: 0,
           }),
           setDoc(blueClicksDocRef, {
-            clicks: [],
+            clicks: 0,
           }),
         ]);
 
@@ -60,11 +57,11 @@ const useInitDashboard = () => {
         blueButtonUnsubscribeRef.current = onSnapshot(
           blueClicksDocRef,
           (snapshot) => {
-            const { clicks: blueClicks } = snapshot.data() as {
-              clicks: Timestamp[];
+            const { clicks } = snapshot.data() as {
+              clicks: number;
             };
 
-            setBlueClickTimestampData(blueClicks);
+            setBlueClickDBCount(clicks);
           }
         );
 
@@ -72,11 +69,11 @@ const useInitDashboard = () => {
         orangeButtonUnsubscribeRef.current = onSnapshot(
           orangeClicksDocRef,
           (snapshot) => {
-            const { clicks: orangeClicks } = snapshot.data() as {
-              clicks: Timestamp[];
+            const { clicks } = snapshot.data() as {
+              clicks: number;
             };
 
-            setOrangeClickTimestampData(orangeClicks);
+            setOrangeClickDBCount(clicks);
           }
         );
       } catch (e: any) {
@@ -94,39 +91,38 @@ const useInitDashboard = () => {
   // We need to make comparisons with the other color's timestamps so must put this code in seperate useEffects in order to get their updated values
   // Handling orange click updates
   useEffect(() => {
-    if (orangeClickTimestampData.length > orangeClickTimestamps.length) {
+    if (orangeClickDBCount > orangeClickTimestamps.length) {
       setOrangeClickTimestamps((orangeClickTimestamps) => [
         ...orangeClickTimestamps,
         Date.now(),
       ]);
 
-      if (orangeClickTimestampData.length + blueClickTimestamps.length === 1) {
+      if (orangeClickDBCount + blueClickTimestamps.length === 1) {
         // Means it's the first click coming in, so start the timer in the component
-
         setupTimer();
       }
     }
   }, [
     blueClickTimestamps.length,
-    orangeClickTimestampData,
+    orangeClickDBCount,
     orangeClickTimestamps.length,
     setupTimer,
   ]);
 
   // Similar to above - handling blue click updates
   useEffect(() => {
-    if (blueClickTimestampData.length > blueClickTimestamps.length) {
+    if (blueClickDBCount > blueClickTimestamps.length) {
       setBlueClickTimestamps((blueClickTimestamps) => [
         ...blueClickTimestamps,
         Date.now(),
       ]);
 
-      if (orangeClickTimestamps.length + blueClickTimestampData.length === 1) {
+      if (orangeClickTimestamps.length + blueClickDBCount === 1) {
         setupTimer();
       }
     }
   }, [
-    blueClickTimestampData.length,
+    blueClickDBCount,
     blueClickTimestamps.length,
     orangeClickTimestamps.length,
     setupTimer,
