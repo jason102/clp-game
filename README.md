@@ -13,7 +13,7 @@ The project dependencies are managed by `yarn`.
 1. Clone the project.
 2. Install dependencies by simply running `yarn`.
 3. Create a new Web Google Firebase project: [https://console.firebase.google.com/](https://console.firebase.google.com/).
-4. Create and enable both the `Firestore Database`.
+4. Create and enable the `Firestore Database`.
 5. Under the Firebase project's settings, scroll down to find the `firebaseConfig` sample JS code with all the API key/config data. Looks like this:
 
 ```
