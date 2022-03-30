@@ -174,5 +174,7 @@ describe('Dashboard page', () => {
       },
       yAxis: { name: 'Clicks', type: 'value' },
     });
+
+    jest.useRealTimers();
   });
 });

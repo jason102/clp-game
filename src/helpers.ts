@@ -11,14 +11,13 @@ const getNumberOfClicksInRange = (
   rangeStart: number,
   rangeEnd: number,
   clickTimestamps: number[]
-) => {
-  return clickTimestamps.reduce((count, nextTimestamp) => {
+) =>
+  clickTimestamps.reduce((count, nextTimestamp) => {
     if (nextTimestamp > rangeStart && nextTimestamp <= rangeEnd) {
       return count + 1;
     }
     return count;
   }, 0);
-};
 
 export const getClicksPerHalfSecond = (
   startingTime: number,
@@ -47,7 +46,7 @@ export const getClicksPerHalfSecond = (
     clickMap[0.5] += 1;
   }
 
-  return Object.values(clickMap);
+  return CHART_TIME_VALUES.map((timeVal) => clickMap[timeVal]);
 };
 
 export const noLineDataArray = Array(CHART_TIME_VALUES.length).fill(0);

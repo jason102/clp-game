@@ -34,9 +34,9 @@ const useSetupGame = () => {
     }
   };
 
-  const setupTimer = useCallback(() => {
+  const setupTimer = useCallback((now: number) => {
     // Means it's the first click coming in, so start the timer in the component
-    startingTime.current = Date.now();
+    startingTime.current = now;
 
     setTimeout(() => {
       setIsGameFinished(true);
@@ -98,16 +98,18 @@ const useSetupGame = () => {
   // We need to make comparisons with the other color's timestamps so must put this code in seperate useEffects in order to get their updated values
   // Handling orange click updates
   useEffect(() => {
+    const now = Date.now();
+
+    if (orangeClickDBCount + blueClickTimestamps.length === 1) {
+      // Means it's the first click coming in, so start the timer in the component
+      setupTimer(now);
+    }
+
     if (orangeClickDBCount > orangeClickTimestamps.length) {
       setOrangeClickTimestamps((orangeClickTimestamps) => [
         ...orangeClickTimestamps,
-        Date.now(),
+        now,
       ]);
-
-      if (orangeClickDBCount + blueClickTimestamps.length === 1) {
-        // Means it's the first click coming in, so start the timer in the component
-        setupTimer();
-      }
     }
   }, [
     blueClickTimestamps.length,
@@ -118,15 +120,17 @@ const useSetupGame = () => {
 
   // Similar to above - handling blue click updates
   useEffect(() => {
+    const now = Date.now();
+
+    if (orangeClickTimestamps.length + blueClickDBCount === 1) {
+      setupTimer(now);
+    }
+
     if (blueClickDBCount > blueClickTimestamps.length) {
       setBlueClickTimestamps((blueClickTimestamps) => [
         ...blueClickTimestamps,
-        Date.now(),
+        now,
       ]);
-
-      if (orangeClickTimestamps.length + blueClickDBCount === 1) {
-        setupTimer();
-      }
     }
   }, [
     blueClickDBCount,
