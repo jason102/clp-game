@@ -1,6 +1,6 @@
 # Jason's CLP Game
 
-This is a Typescript React [Vite](https://vitejs.dev/) app using Firebase for the backend. It is a demonstration of how to show real-time updates on a dashboard UI when a user somewhere else clicks orange and blue buttons to increase their respective values within 5 second after the first click is registered.
+This is a Typescript React [Vite](https://vitejs.dev/) app using Firebase for the backend. It is a demonstration of how to show real-time updates on a dashboard UI when a user somewhere else clicks orange and blue buttons to increase their respective values within 5 seconds after the first click is registered.
 
 The dashboard is deployed at [clp-game.vercel.app](https://clp-game.vercel.app) and the client at [clp-game.vercel.app/client](https://clp-game.vercel.app/client).
 

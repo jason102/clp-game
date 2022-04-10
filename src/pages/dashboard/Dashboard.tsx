@@ -12,8 +12,8 @@ const Dashboard: React.FC = () => {
   const {
     isLoading,
     loadingError,
-    orangeClickTimestamps,
-    blueClickTimestamps,
+    orangeClickCount,
+    blueClickCount,
     graphData,
   } = useSetupGame();
 
@@ -29,8 +29,8 @@ const Dashboard: React.FC = () => {
     <Container>
       <Chart graphData={graphData} />
       <ButtonCountContainer>
-        <OrangeButtonCount>{orangeClickTimestamps.length}</OrangeButtonCount>
-        <BlueButtonCount>{blueClickTimestamps.length}</BlueButtonCount>
+        <OrangeButtonCount>{orangeClickCount}</OrangeButtonCount>
+        <BlueButtonCount>{blueClickCount}</BlueButtonCount>
       </ButtonCountContainer>
       <p>
         {`To play the game, you must `}
