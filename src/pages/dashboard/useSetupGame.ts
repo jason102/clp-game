@@ -96,7 +96,7 @@ const useSetupGame = () => {
           // This code runs even when clicks === 0 so must skip this first event
           if (clicks > 0) {
             const now = Date.now();
-            blueClickTimestamps.current = [...blueClickTimestamps.current, now];
+            blueClickTimestamps.current.push(now);
 
             setupTimer(now);
 
@@ -115,10 +115,7 @@ const useSetupGame = () => {
 
           if (clicks > 0) {
             const now = Date.now();
-            orangeClickTimestamps.current = [
-              ...orangeClickTimestamps.current,
-              now,
-            ];
+            orangeClickTimestamps.current.push(now);
 
             setupTimer(now);
 
