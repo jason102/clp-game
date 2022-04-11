@@ -1,6 +1,10 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { blueClicksDocRef, orangeClicksDocRef } from 'firebaseConfig';
-import { setDoc, onSnapshot, Unsubscribe } from 'firebase/firestore';
+import {
+  blueClicksDocRef,
+  firestoreDB,
+  orangeClicksDocRef,
+} from 'firebaseConfig';
+import { writeBatch, onSnapshot, Unsubscribe } from 'firebase/firestore';
 import { GAME_TIME, getClicksPerHalfSecond, noLineDataArray } from 'helpers';
 import { GraphData } from './Chart';
 
@@ -76,14 +80,16 @@ const useSetupGame = () => {
   const setupDatabase = useCallback(async () => {
     try {
       // Clear the clicks of the previous game
-      await Promise.all([
-        setDoc(orangeClicksDocRef, {
-          clicks: 0,
-        }),
-        setDoc(blueClicksDocRef, {
-          clicks: 0,
-        }),
-      ]);
+      const batchOperation = writeBatch(firestoreDB);
+
+      batchOperation.set(orangeClicksDocRef, {
+        clicks: 0,
+      });
+      batchOperation.set(blueClicksDocRef, {
+        clicks: 0,
+      });
+
+      await batchOperation.commit();
 
       // Then listen to blue click updates from the client
       blueButtonUnsubscribeRef.current = onSnapshot(
