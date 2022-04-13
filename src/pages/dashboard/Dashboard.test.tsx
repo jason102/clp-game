@@ -23,6 +23,13 @@ jest.mock('echarts/renderers', () => ({}));
 describe('Dashboard page', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+
+    jest.spyOn(firebase, 'writeBatch').mockImplementation(() => ({
+      update: jest.fn(),
+      set: jest.fn(),
+      commit: jest.fn(),
+      delete: jest.fn(),
+    }));
   });
 
   it('renders the loading state and dashboard when loading is successful', async () => {
@@ -47,9 +54,14 @@ describe('Dashboard page', () => {
   });
 
   it('renders an error when resetting the game fails', async () => {
-    jest.spyOn(firebase, 'setDoc').mockImplementation(() => {
-      throw 'firebase string-only error yikes';
-    });
+    jest.spyOn(firebase, 'writeBatch').mockImplementation(() => ({
+      update: jest.fn(),
+      set: jest.fn(),
+      commit: () => {
+        throw 'firebase string-only error yikes';
+      },
+      delete: jest.fn(),
+    }));
 
     const { asFragment } = render(<Dashboard />);
 
@@ -104,15 +116,15 @@ describe('Dashboard page', () => {
       .spyOn(firebase, 'onSnapshot')
       .mockImplementationOnce((_, onNext) => {
         // @ts-ignore:
-        onNext({ data: () => ({ clicks: 1 }) }); // orange clicks
+        onNext({ data: () => ({ clicks: 1 }) }); // blue clicks
 
         return jest.fn();
       })
       .mockImplementationOnce((_, onNext) => {
         setTimeout(() => {
           // @ts-ignore:
-          onNext({ data: () => ({ clicks: 1 }) }); // blue clicks
-        }, 3000); // fire a blue click after 3 seconds
+          onNext({ data: () => ({ clicks: 1 }) }); // orange clicks
+        }, 3000); // fire an orange click after 3 seconds
 
         return jest.fn();
       });
@@ -133,7 +145,7 @@ describe('Dashboard page', () => {
     // Need to use act() due to multiple renders being triggered
     await act(async () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      await waitFor(() => {}); // pass the Promise.all()
+      await waitFor(() => {}); // pass the await batchOperation.commit()
 
       jest.advanceTimersByTime(5000); // end the game after 5 seconds
     });
