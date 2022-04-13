@@ -1,7 +1,6 @@
 import { render, waitFor, act, screen } from '@testing-library/react';
 import Dashboard from './Dashboard';
 import * as firebase from 'firebase/firestore';
-import * as echarts from 'echarts/core';
 import * as helpers from 'helpers';
 import { BLUE, ORANGE } from 'Colors';
 
@@ -10,12 +9,15 @@ jest.mock('firebaseConfig', () => ({
   orangeClicksDocRef: 'orangeClicksDocRef',
 }));
 jest.mock('firebase/firestore');
+
+const echartsSpy = jest.fn();
 jest.mock('echarts/core', () => ({
   use: jest.fn(),
   init: () => ({
-    setOption: jest.fn(),
+    setOption: echartsSpy,
   }),
 }));
+
 jest.mock('echarts/charts', () => ({}));
 jest.mock('echarts/components', () => ({}));
 jest.mock('echarts/features', () => ({}));
@@ -109,12 +111,6 @@ describe('Dashboard page', () => {
   });
 
   it('should call echarts setOption() to draw the graph after 5 seconds with click data', async () => {
-    const echartsSpy = jest.fn();
-
-    // @ts-ignore:
-    jest.spyOn(echarts, 'init').mockImplementation(() => ({
-      setOption: echartsSpy,
-    }));
     jest
       .spyOn(firebase, 'onSnapshot')
       .mockImplementationOnce((_, onNext) => {
@@ -150,7 +146,7 @@ describe('Dashboard page', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       await waitFor(() => {}); // pass the await batchOperation.commit()
 
-      jest.advanceTimersByTime(5000); // end the game after 5 seconds
+      jest.advanceTimersByTime(9001); // end the game after 5 seconds
     });
 
     expect(echartsSpy).toHaveBeenCalledWith({
