@@ -3,6 +3,7 @@ import Dashboard from './Dashboard';
 import * as firebase from 'firebase/firestore';
 import * as echarts from 'echarts/core';
 import * as helpers from 'helpers';
+import { BLUE, ORANGE } from 'Colors';
 
 jest.mock('firebaseConfig', () => ({
   blueClicksDocRef: 'blueClicksDocRef',
@@ -83,13 +84,13 @@ describe('Dashboard page', () => {
       .spyOn(firebase, 'onSnapshot')
       .mockImplementationOnce((_, onNext) => {
         // @ts-ignore:
-        onNext({ data: () => ({ clicks: 1 }) }); // orange clicks
+        onNext({ data: () => ({ clicks: 1 }) }); // blue clicks
 
         return jest.fn();
       })
       .mockImplementationOnce((_, onNext) => {
         // @ts-ignore:
-        onNext({ data: () => ({ clicks: 2 }) }); // blue clicks
+        onNext({ data: () => ({ clicks: 2 }) }); // orange clicks
 
         return jest.fn();
       });
@@ -97,11 +98,13 @@ describe('Dashboard page', () => {
     render(<Dashboard />);
 
     await waitFor(() => {
-      const orangeClickCount = screen.getByText(1);
-      const blueClickCount = screen.getByText(2);
+      const blueClickCount = screen.getByText(1);
+      const orangeClickCount = screen.getByText(2);
 
       expect(orangeClickCount).toBeInTheDocument();
+      expect(orangeClickCount).toHaveStyle(`background-color: ${ORANGE}`);
       expect(blueClickCount).toBeInTheDocument();
+      expect(blueClickCount).toHaveStyle(`background-color: ${BLUE}`);
     });
   });
 
