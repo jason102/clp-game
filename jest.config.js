@@ -2,7 +2,6 @@ module.exports = {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest-setup.js'],
   transform: {
-    '^.+\\.svg$': '<rootDir>/svgTransform.js',
     '^.+\\.(j|t)sx?$': [
       '@swc/jest',
       {

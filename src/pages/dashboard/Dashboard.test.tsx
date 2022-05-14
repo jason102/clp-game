@@ -4,10 +4,6 @@ import * as firebase from 'firebase/firestore';
 import * as helpers from 'helpers';
 import { BLUE, ORANGE } from 'Colors';
 
-jest.mock('firebaseConfig', () => ({
-  blueClicksDocRef: 'blueClicksDocRef',
-  orangeClicksDocRef: 'orangeClicksDocRef',
-}));
 jest.mock('firebase/firestore');
 
 const echartsSpy = jest.fn();
